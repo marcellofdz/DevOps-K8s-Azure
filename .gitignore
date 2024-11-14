@@ -1,0 +1,23 @@
+# Ignorar la carpeta donde Terraform almacena información del backend y plugins
+.terraform/
+
+# Ignorar archivos de estado de Terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+# Ignorar archivos de estado generados durante operaciones
+*.tfstate
+*.tfstate.*
+
+# Ignorar archivos de logs de ejecución
+crash.log
+
+# Ignorar archivos de configuración con credenciales o variables sensibles
+*.tfvars
+*.tfvars.json
+
+# Ignorar plan de Terraform generado localmente
+terraform.tfplan
+
+# Ignorar archivos de salida y logs generados por Terraform
+*.log

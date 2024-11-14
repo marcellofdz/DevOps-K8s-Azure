@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: web_page
+  name: webpage-banreserva
+  namespace: banreserva-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web_page
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: web_page
+    spec:
+      containers:
+      - image: amazon/amazon-ecs-sample
+        name: web-basica
+
