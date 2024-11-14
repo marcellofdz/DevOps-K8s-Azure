@@ -1,0 +1,3 @@
+include:
+  - local: '.gitlab-ci-terraform.yml'
+  - local: '.gitlab-ci-kubernetes.yml'
