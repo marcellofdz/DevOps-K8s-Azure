@@ -61,7 +61,10 @@ jobs:
         run: |
           export KUBECONFIG=/tmp/kubeconfig
           echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
-
+      
+      - name: Set Kubernetes Context
+        run: kubectl config use-context aks-dev-cluster --kubeconfig /tmp/kubeconfig
+        
       - name: Verify Kubernetes Cluster Access
         run: |
           kubectl --kubeconfig=/tmp/kubeconfig cluster-info
