@@ -54,7 +54,6 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           mv kubeconfig $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
           echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
       
       - name: Verify Kubernetes Cluster Context
