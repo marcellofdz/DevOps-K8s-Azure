@@ -42,6 +42,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Download kubectl binaries
+        run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+     
+      - name: Install Kubectl
+        run: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
       - name: Set up Azure CLI
         uses: azure/CLI@v1
@@ -49,7 +55,7 @@ jobs:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az aks get-credentials --resource-group aks-dev --name aks-dev-cluster --admin --overwrite-existing --file /tmp/kubeconfig
-            chmod 644 /tmp/kubeconfig
+            chmod 755 /tmp/kubeconfig
 
       - name: Set KUBECONFIG Environment Variable
         run: |
