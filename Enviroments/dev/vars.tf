@@ -3,7 +3,7 @@ variable "ARM_CLIENT_ID" {
 }
 
 variable "ARM_CLIENT_SECRET" {
-  type = string
+  type      = string
   sensitive = true
 }
 
