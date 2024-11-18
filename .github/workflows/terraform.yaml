@@ -6,21 +6,47 @@ on:
       - main
 
 jobs:
-  terraform:
+  plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
+    env:
+      TF_WORKSPACE: "devops-HCP" # Name of the Terraform Cloud workspace
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v3
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform Init
+        run: |
+          sudo apt-get update && sudo apt-get install -y curl jq
+          curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
+          export PATH=$PATH:/usr/local/bin
+      - name: Initialize Terraform
         run: terraform init
-
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
+        id: plan
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: tfplan
 
+  apply:
+    name: Terraform Apply
+    needs: plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Terraform
+        run: |
+          sudo apt-get update && sudo apt-get install -y curl jq
+          curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
+          export PATH=$PATH:/usr/local/bin
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
+        run: terraform apply -input=false tfplan
+        if: success()
