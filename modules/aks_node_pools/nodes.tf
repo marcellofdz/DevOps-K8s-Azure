@@ -8,6 +8,8 @@ resource "azurerm_kubernetes_cluster_node_pool" "aks_dev_nodes" {
   vnet_subnet_id = each.value.vnet_subnet_id
   orchestrator_version = each.value.orchestrator_version
   os_type = each.value.os_type
+  priority = "Spot"
+  eviction_policy = "Delete"
 
   # Añadir etiquetas si las tienes definidas
   tags = {

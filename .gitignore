@@ -21,3 +21,11 @@ terraform.tfplan
 
 # Ignorar archivos de salida y logs generados por Terraform
 *.log
+
+
+# Ignore sensitive Terraform variable files
+terraform.tfvars
+*.auto.tfvars
+
+terraform.fstate
+*.tfstate

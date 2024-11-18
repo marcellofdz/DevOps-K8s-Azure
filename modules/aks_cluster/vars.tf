@@ -2,6 +2,17 @@ variable "aks_cluster_name" {
   type = string
 }
 
+variable "default_node_pool_name" {
+  type = string
+}
+
+variable "default_node_pool_vm_size" {
+  type = string
+}
+
+variable "node_count" {
+  type = number
+}
 variable "aks_cluster_rg" {
   type = string
 }

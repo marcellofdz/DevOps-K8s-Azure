@@ -13,3 +13,11 @@ variable "node_pools" {
 variable "kubernetes_cluster_id" {
   type = string
 }
+
+variable "priority_nodes" {
+  type = string
+}
+
+variable "eviction_policy" {
+  type = string
+}

@@ -6,9 +6,9 @@ resource "azurerm_kubernetes_cluster" "aks_dev_cluster" {
   kubernetes_version  = var.kubernetes_version
 
   default_node_pool {
-    name       = "akstesting"
-    vm_size    = "Standard_B2s"
-    node_count = 1
+    name       = var.default_node_pool_name
+    vm_size    = var.default_node_pool_vm_size
+    node_count = var.node_count
     vnet_subnet_id = var.subnet_id
     #temporary_name_for_rotation = "akstesting-temp"
   }
