@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: web-page-service
-  namespace: banreserva-web
+  namespace: redux-web
 spec:
   selector:
     app: web_page
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 80          
-      targetPort: 80
+      port: 80          ## Service port
+      targetPort: 80 ## Pod port
 

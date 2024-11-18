@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-loadbalancer
+  namespace: redux-web
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask-python-webpage
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

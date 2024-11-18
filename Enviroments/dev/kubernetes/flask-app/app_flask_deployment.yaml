@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  namespace: redux-web
+  labels:
+    app: flask-python-webpage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-python-webpage
+  template:
+    metadata:
+      labels:
+        app: flask-python-webpage
+    spec:
+      containers:
+        - name: flask-python-webpage
+          image: "<AZURE_REGISTRY_LOGIN_SERVER>/api-hola-mundo:latest"
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+

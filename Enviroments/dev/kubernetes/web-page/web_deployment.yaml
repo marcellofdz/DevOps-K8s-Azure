@@ -4,7 +4,7 @@ metadata:
   labels:
     app: web_page
   name: webpage-banreserva
-  namespace: banreserva-web
+  namespace: redux-web
 spec:
   replicas: 1
   selector:
