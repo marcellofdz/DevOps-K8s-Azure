@@ -1,93 +1,113 @@
-# TF-AKS
+# DevOps-K8s-Azure
 
+![Kubernetes on Azure](https://miro.medium.com/max/2400/1*fTQmmk-7lQUUC41cSzmj_w.png)
 
+This project aims to implement and automate a Kubernetes cluster (AKS) on Azure using infrastructure as code tools, CI/CD, and containers. It serves as a practical example of how to orchestrate an efficient deployment of cloud resources with Terraform, GitHub Actions, and Kubernetes for a robust DevOps environment.
 
-## Getting started
+## ⚡ Project Overview
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This repository contains the necessary code and configuration to deploy an AKS cluster and deploy applications on it. It uses **Terraform** to create the infrastructure on Azure and **GitHub Actions** to set up CI/CD automation.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Technologies Used
 
-## Add your files
+- **Terraform**: Used to define and manage Azure infrastructure.
+- **Azure Kubernetes Service (AKS)**: Cloud container orchestrator to run applications.
+- **GitHub Actions**: CI/CD automation for infrastructure and application deployments.
+- **Docker**: Containerizes applications and publishes them to a registry.
+- **Azure Container Registry (ACR)**: Container registry to store and serve Docker images.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## 🛠‍️ Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/devopsrd1/TF-AKS.git
-git branch -M main
-git push -uf origin main
+Gitlab-TF-AKS
+├── Enviroments
+│   ├── dev
+│   │   ├── 001_resource_group.tf
+│   │   ├── 002_vnet.tf
+│   │   ├── 003_aks_cluster.tf
+│   │   ├── 004_registry.tf
+│   │   ├── provider.tf
+│   │   ├── vars.tf
+│   │   └── kubernetes
+│   │       ├── deploy-ingress-nginx.yaml
+│   │       ├── namespace.yaml
+│   │       ├── svc_loadbalancer.yaml
+│   │       └── web_deployment.yaml
+│   ├── qa
+│   └── prod
+├── modules
+│   ├── aks_cluster
+│   ├── aks_node_pools
+│   ├── networking
+│   ├── registry
+│   └── rg
+└── .github
+    └── workflows
+        ├── terraform.yml
+        └── kubernetes_deploy.yml
 ```
 
-## Integrate with your tools
+- **Environments**: Contains Terraform configurations for different environments, such as development, QA, and production.
+- **Modules**: Defines reusable Terraform modules to simplify infrastructure management.
+- **.github/workflows**: Contains GitHub Actions workflows for deployment automation.
 
-- [ ] [Set up project integrations](https://gitlab.com/devopsrd1/TF-AKS/-/settings/integrations)
+## 🏦 Deployed Infrastructure
 
-## Collaborate with your team
+- **Resource Group** to manage all Azure resources.
+- **Virtual Network (VNet)** with separate subnets for securing the infrastructure.
+- **Kubernetes Cluster (AKS)** with autoscaling and identity management.
+- **Azure Container Registry (ACR)** to store Docker images that will be deployed to the AKS cluster.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## ⚙️ CI/CD Pipelines
 
-## Test and Deploy
+### Terraform Pipeline
 
-Use the built-in continuous integration in GitLab.
+- Located in the `.github/workflows/terraform.yml` file.
+- **Stages**:
+  - **Plan**: Generates an execution plan to validate changes to the infrastructure.
+  - **Apply**: Applies approved changes to the AKS cluster.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Kubernetes Deployment Pipeline
 
-***
+- Defined in `.github/workflows/kubernetes_deploy.yml`.
+- **Stages**:
+  - **Deploy**: Deploys Kubernetes manifests to launch the application on the AKS cluster.
 
-# Editing this README
+## 🌐 Deploying the Infrastructure
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/marcellofdz/DevOps-K8s-Azure.git
+   cd DevOps-K8s-Azure
+   ```
+2. **Set Environment Variables**:
+   Environment variables such as `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, etc., should be configured in GitHub as secrets.
+3. **Run the Terraform Pipeline**:
+   Push to the repository to trigger the Terraform workflow in GitHub Actions.
 
-## Suggestions for a good README
+## 🚀 Deploy Applications to AKS
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Once the cluster is up and running:
+1. **Modify and Push Kubernetes Manifests**:
+   You can modify the manifests in `Enviroments/dev/kubernetes`.
+2. **Run the Kubernetes Deployment Pipeline**:
+   Perform a `git push` to trigger the deployment pipeline in AKS.
 
-## Name
-Choose a self-explaining name for your project.
+## ⭐ Future Improvements
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- **Implement an Ingress Controller** to improve traffic management to the deployed applications.
+- **Add Auto-Scaling** to AKS nodes for more efficient resource handling.
+- **Integrate Helm** to deploy more complex applications.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+## 📈 Contributions
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Contributions are welcome. If you want to contribute, please **fork** the repository and create a **pull request** with your improvements.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 🌟 Acknowledgments
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Thanks to the entire DevOps community for their guides and documentation that made this project possible.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## ℹ️ License
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+This project is licensed under the MIT License. See the LICENSE file for more details.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
