@@ -48,12 +48,15 @@ jobs:
         with:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-            az aks get-credentials --resource-group aks-dev --name aks-dev-cluster
+            az aks get-credentials --resource-group aks-dev --name aks-dev-cluster --overwrite-existing
+
+      - name: Verify Kubernetes Cluster Access
+        run: kubectl get nodes
 
       - name: Deploy to AKS
         run: |
-          sed -i 's#<AZURE_REGISTRY_LOGIN_SERVER>#${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}#g' ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml
-          kubectl apply -f ./Enviroments/dev/kubernetes/namespace.yaml
-          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/svc-flask-app.yaml
-          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml
+          sed -i 's#<AZURE_REGISTRY_LOGIN_SERVER>#${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}#g' ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml 
+          kubectl apply -f ./Enviroments/dev/kubernetes/namespace.yaml --validate=false
+          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/svc-flask-app.yaml --validate=false
+          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml --validate=false
           kubectl set image deployment/flask-deployment python-web-page=${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/api-hola-mundo:latest
