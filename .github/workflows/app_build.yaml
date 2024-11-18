@@ -58,7 +58,7 @@ jobs:
       - name: Verificar y Usar Contexto de Kubernetes
         run: |
           kubectl config get-contexts --kubeconfig /tmp/kubeconfig
-          kubectl config use-context aks-dev-cluster --kubeconfig /tmp/kubeconfig
+          kubectl config get-clusters --kubeconfig /tmp/kubeconfig
 
       
       - name: Verify Kubernetes Cluster Access
