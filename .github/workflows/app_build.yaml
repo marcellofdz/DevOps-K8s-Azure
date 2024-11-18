@@ -52,16 +52,14 @@ jobs:
             chmod 644 /tmp/kubeconfig
 
       - name: Set KUBECONFIG Environment Variable
-        run: export KUBECONFIG=/tmp/kubeconfig; echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
-      
-      - name: Get Kubernetes Context
-        run: kubectl config current-context --kubeconfig /tmp/kubeconfig
-      
-      - name: Get Kubernetes Context
-        run: kubectl config view ; kubectl config use-context aks-dev-cluster --kubeconfig /tmp/kubeconfig
-      
+        run: |
+          echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
+          export KUBECONFIG=/tmp/kubeconfig
+
       - name: Verify Kubernetes Cluster Access
-        run: kubectl get nodes
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
 
       - name: Deploy to AKS
         run: |
