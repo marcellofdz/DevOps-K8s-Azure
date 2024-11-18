@@ -54,10 +54,12 @@ jobs:
       - name: Set KUBECONFIG Environment Variable
         run: echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
       
-      - name: Verify Kubernetes Cluster Context
+
+      - name: Verificar y Usar Contexto de Kubernetes
         run: |
-          kubectl config get-contexts
-          kubectl config current-context
+          kubectl config get-contexts --kubeconfig /tmp/kubeconfig
+          kubectl config use-context aks-dev-cluster-admin --kubeconfig /tmp/kubeconfig
+          
       
       - name: Verify Kubernetes Cluster Access
         run: |
