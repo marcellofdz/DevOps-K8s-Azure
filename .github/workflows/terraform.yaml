@@ -5,7 +5,7 @@ on:
       branches:
         - main
       paths:
-        - 'Enviroments/**'
+        - 'Enviroments/dev/*.tf'
         - 'modules/**'
         - '*.tf'
         - '*.tfvars'
