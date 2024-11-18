@@ -42,38 +42,35 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
-      - name: Download kubectl binaries
-        run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-     
-      - name: Install Kubectl
-        run: sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
       - name: Set up Azure CLI
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-            az aks get-credentials --resource-group aks-dev --name aks-dev-cluster --admin --overwrite-existing --file /tmp/kubeconfig
-            chmod 755 /tmp/kubeconfig
+            az aks get-credentials --resource-group aks-dev --name aks-dev-cluster --admin --overwrite-existing --file kubeconfig
 
-      - name: Set KUBECONFIG Environment Variable
+      - name: Persist kubeconfig
         run: |
-          export KUBECONFIG=/tmp/kubeconfig
-          echo "KUBECONFIG=/tmp/kubeconfig" >> $GITHUB_ENV
+          mkdir -p $HOME/.kube
+          mv kubeconfig $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
       
-      - name: Set Kubernetes Context
-        run: kubectl config use-context aks-dev-cluster --kubeconfig /tmp/kubeconfig
-        
+      - name: Verify Kubernetes Cluster Context
+        run: |
+          kubectl config get-contexts
+          kubectl config current-context
+
       - name: Verify Kubernetes Cluster Access
         run: |
-          kubectl --kubeconfig=/tmp/kubeconfig cluster-info
-          kubectl --kubeconfig=/tmp/kubeconfig get nodes
+          kubectl cluster-info
+          kubectl get nodes
 
       - name: Deploy to AKS
         run: |
           sed -i 's#<AZURE_REGISTRY_LOGIN_SERVER>#${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}#g' ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml 
-          kubectl apply -f ./Enviroments/dev/kubernetes/namespace.yaml --validate=false --kubeconfig=/tmp/kubeconfig
-          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/svc-flask-app.yaml --validate=false --kubeconfig=/tmp/kubeconfig
-          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml --validate=false --kubeconfig=/tmp/kubeconfig
-          kubectl set image deployment/flask-deployment python-web-page=${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/api-hola-mundo:latest --kubeconfig=/tmp/kubeconfig
+          kubectl apply -f ./Enviroments/dev/kubernetes/namespace.yaml --validate=false
+          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/svc-flask-app.yaml --validate=false
+          kubectl apply -f ./Enviroments/dev/kubernetes/flask-app/app_flask_deployment.yaml --validate=false
+          kubectl set image deployment/flask-deployment python-web-page=${{ secrets.AZURE_REGISTRY_LOGIN_SERVER }}/api-hola-mundo:latest
