@@ -54,9 +54,11 @@ jobs:
         run: export KUBECONFIG=/root/.kube/config
       
       - name: Get Kubernetes Context
-        run: kubectl config current-context
+        run: kubectl config current-context --kubeconfig /root/.kube/config
       
-
+      - name: Get Kubernetes Context
+        run: kubectl config view --kubeconfig /root/.kube/config
+      
       - name: Verify Kubernetes Cluster Access
         run: kubectl get nodes
 
