@@ -7,15 +7,18 @@ on:
 
 jobs:
   terraform-plan:
-    name: Terraform Plan
     runs-on: ubuntu-latest
     env:
       TF_WORKSPACE: "devops-HCP" # Name of the Terraform Cloud workspace
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        run: |
+          sudo apt-get update && sudo apt-get install -y curl jq
+          curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash
+          export PATH=$PATH:/usr/local/bin
       - name: Initialize Terraform
         run: terraform init
       - name: Terraform Plan
