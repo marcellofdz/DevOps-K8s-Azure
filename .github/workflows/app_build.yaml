@@ -49,15 +49,17 @@ jobs:
           inlineScript: |
             az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
             az aks get-credentials --resource-group aks-dev --name aks-dev-cluster --overwrite-existing
+            cp /root/.kube/config /tmp/kubeconfig
+            chmod 644 /tmp/kubeconfig
 
       - name: Set KUBECONFIG Environment Variable
-        run: export KUBECONFIG=/root/.kube/config
+        run: export KUBECONFIG=/tmp/kubeconfig
       
       - name: Get Kubernetes Context
-        run: kubectl config current-context --kubeconfig /root/.kube/config
+        run: kubectl config current-context --kubeconfig /tmp/kubeconfig
       
       - name: Get Kubernetes Context
-        run: kubectl config view --kubeconfig /root/.kube/config
+        run: kubectl config view
       
       - name: Verify Kubernetes Cluster Access
         run: kubectl get nodes
