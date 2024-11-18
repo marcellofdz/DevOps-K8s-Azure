@@ -13,7 +13,7 @@ locals {
   node_pools = {
     "aksdevwkr1" = {
       node_count           = 1
-      vm_size              = "Standard_B2s"
+      vm_size              = "Standard_A2_v2"
       os_disk_size_gb      = 30
       vnet_subnet_id       = module.vnet.subnet_ids["aks-subnet-1"]
       orchestrator_version = "1.31.1"
